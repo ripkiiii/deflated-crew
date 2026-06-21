@@ -35,3 +35,14 @@ jobs:
           BLUESKY_HANDLE: ${{ secrets.BLUESKY_HANDLE }}
           BLUESKY_APP_PASSWORD: ${{ secrets.BLUESKY_APP_PASSWORD }}
         run: python deflated_post.py
+
+      - name: Write blog post
+        env:
+          ZAI_API_KEY: ${{ secrets.ZAI_API_KEY }}
+        run: python deflated_blog.py
+
+      - name: Upload blog artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: blog-${{ github.run_id }}
+          path: blog_*.md
