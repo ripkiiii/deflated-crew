@@ -3,8 +3,11 @@ from datetime import date
 from crewai import Agent, Task, Crew, LLM
 from crewai_tools import FileReadTool
 
-import os
-llm = LLM(model="zai/glm-4.7-flash", api_key=os.environ.get("ZAI_API_KEY", "fb4af394b79e400fa6277241bc3b7464.Q3ApMGJxs9flsPY5"))
+llm = LLM(
+    model="openai/glm-4.7-flash",
+    base_url="https://api.z.ai/v1",
+    api_key=os.environ.get("ZAI_API_KEY", "fb4af394b79e400fa6277241bc3b7464.Q3ApMGJxs9flsPY5"),
+)
 
 digest_file = f"digest_{date.today().strftime('%Y-%m-%d')}.md"
 file_tool = FileReadTool(file_path=digest_file)
