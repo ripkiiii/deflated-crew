@@ -1,0 +1,6 @@
+digest_*.md
+thread_*.md
+output.txt
+__pycache__/
+*.pyc
+.env
