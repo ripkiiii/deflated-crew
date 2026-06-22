@@ -9,6 +9,7 @@ llm = LLM(
     model="gemini/gemini-2.5-flash",
     api_key=os.environ.get("GEMINI_API_KEY", "AQ.Ab8RN6I-blFgqt8L2pB6QEoWRx_gEf25BbJF_cZ9q_E_D_Zh5w"),
     max_tokens=2048,
+    max_rpm=4,
 )
 search_tool = SerperDevTool()
 scrape_tool = ScrapeWebsiteTool()
