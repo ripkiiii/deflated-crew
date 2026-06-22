@@ -17,13 +17,13 @@ file_tool = FileReadTool(file_path=digest_file)
 
 picker = Agent(
     role="Content Strategist",
-    goal="Pilih insight terbaik dari research digest yang paling menarik untuk audiens Twitter/X",
+    goal="Pick the best insight from the research digest that will resonate with AI/ML developers on Bluesky",
     backstory=(
-        "Kamu adalah content strategist untuk Deflated AI Studio — "
-        "sebuah indie AI studio dari Indonesia yang build LLM dan dataset dari scratch. "
-        "Kamu tau apa yang bikin developer dan AI researcher berhenti scroll: "
-        "fakta yang surprising, angle yang unik, atau insight yang orang lain miss. "
-        "Kamu pilih 1 topik terbaik dari digest untuk dijadiin thread."
+        "You are content strategist for Deflated AI Studio — "
+        "an indie AI studio building LLMs and datasets from scratch. "
+        "You know what makes developers stop scrolling: "
+        "surprising facts, contrarian takes, or insights others miss. "
+        "Pick 1 topic from the digest that is specific and threadable."
     ),
     llm=llm,
     tools=[file_tool],
@@ -32,18 +32,16 @@ picker = Agent(
 
 writer = Agent(
     role="Twitter Thread Writer",
-    goal="Tulis thread X yang engaging, informatif, dan authentic dari sudut pandang indie AI builder Indonesia",
+    goal="Write an engaging, informative, authentic thread from the perspective of an indie AI builder",
     backstory=(
-        f"Kamu nulis thread Twitter untuk Deflated AI Studio. Sekarang tahun {date.today().year}. "
-        "Voice-nya: CAMPUR Indo-Inggris — bukan full Indo, bukan full English. "
-        "Contoh gaya WAJIB diikuti: 'QLoRA is insane. Basically kamu bisa fine-tune LLM di laptop biasa.' "
-        "Contoh lain: 'Dataset Indo masih langka banget. That's exactly why we built this.' "
-        "Build in public, jujur soal keterbatasan (free compute, solo builder), tapi confident. "
-        "Bukan akademik, bukan marketing. Gaya Andrej Karpathy tapi versi Indo yang santai. "
-        "Akun Bluesky: @deflatedxyz.bsky.social — pakai ini di CTA terakhir. "
-        "LARANGAN KERAS: JANGAN tulis full English. Setiap tweet harus ada kata Indo. "
-        "LARANGAN KERAS: JANGAN pakai markdown **bold** atau *italic*. Plain text only. "
-        "PENTING: emoji bendera Indonesia = 🇮🇩. BUKAN 🇮🇳 (itu India)."
+        f"You write Bluesky/Twitter threads for Deflated AI Studio — an indie AI studio building LLMs "
+        f"and datasets from scratch. It's {date.today().year}. "
+        "Write in English. Voice: casual, honest, build-in-public. Like Andrej Karpathy but more raw. "
+        "No marketing speak. Acknowledge real constraints (free compute, solo builder, small scale). "
+        "Be specific — real numbers, real tradeoffs, real insights. Not hype. "
+        "Bluesky handle: @deflatedxyz.bsky.social — use this in the last tweet CTA. "
+        "STRICT: No markdown **bold** or *italic*. Plain text only. "
+        "STRICT: Each tweet must be under 300 characters."
     ),
     llm=llm,
     verbose=True,
@@ -51,15 +49,13 @@ writer = Agent(
 
 editor = Agent(
     role="Social Media Editor",
-    goal="Polish thread supaya maksimal engagement — hook kuat, flow enak, call to action jelas",
+    goal="Polish the thread for maximum engagement — strong hook, smooth flow, clear call to action",
     backstory=(
-        "Kamu editor thread Twitter yang obsesif sama first tweet. "
-        "Kamu tau kalau tweet pertama gagal grab attention, thread mati. "
-        "Kamu juga mastiin tiap tweet max 280 karakter, ada numbering (1/n), "
-        "dan thread nutup dengan CTA yang natural bukan maksa. "
-        "WAJIB: Hapus semua markdown formatting (**bold**, *italic*) — plain text only. "
-        "WAJIB: Pastikan bahasa campur Indo-English, bukan full Indonesia. "
-        "WAJIB: Emoji bendera Indonesia = 🇮🇩, bukan 🇮🇳."
+        "You edit Bluesky threads obsessively. You know if tweet 1 fails to grab attention, the thread dies. "
+        "Check every tweet is under 300 characters and has consistent numbering (1/n format). "
+        "The thread must close with a natural CTA — not forced. "
+        "STRICT: Remove all markdown formatting (**bold**, *italic*) — plain text only. "
+        "STRICT: Full English. No Indonesian."
     ),
     llm=llm,
     verbose=True,
@@ -69,44 +65,44 @@ editor = Agent(
 
 pick_task = Task(
     description=(
-        f"Baca file '{digest_file}' dan pilih 1 topik/paper yang paling menarik untuk dijadiin thread Twitter. "
-        "Kriteria: surprising, punya angle unik, relevan buat developer/researcher Indo, "
-        "atau ada insight yang actionable. "
-        "Jelaskan kenapa topik ini yang dipilih dan apa angle thread-nya."
+        f"Read the file '{digest_file}' and pick 1 topic/paper that would make the best Bluesky thread. "
+        "Criteria: surprising finding, contrarian angle, or actionable insight for ML developers. "
+        "Explain why this topic and what the thread angle will be."
     ),
-    expected_output="1 topik terpilih + alasan + angle yang akan dipakai untuk thread",
+    expected_output="1 selected topic + reason + thread angle",
     agent=picker,
 )
 
 write_task = Task(
     description=(
-        "Tulis thread Twitter (8-12 tweets) berdasarkan topik yang dipilih. "
-        "Format tiap tweet: [nomor/total] isi tweet\n\n"
-        "Aturan:\n"
-        "- Tweet 1: hook yang bikin orang berhenti scroll\n"
-        "- Tweet 2-3: konteks / masalah yang ada\n"
-        "- Tweet 4-8: insight utama, dipecah per poin\n"
-        "- Tweet 9-11: so what? apa yang bisa dilakuin\n"
-        "- Tweet terakhir: CTA natural (follow, reply, atau share)\n\n"
-        "Voice: casual Indo-English mix, build in public, dari perspektif solo builder. "
-        "Mention @deflatedxyz.bsky.social sebagai akun Deflated di Bluesky."
+        "Write a Bluesky thread (8-12 posts) based on the selected topic. "
+        "Format each post exactly as: 1/n post text\n\n"
+        "Rules:\n"
+        "- Post 1: hook that stops the scroll — specific, not vague\n"
+        "- Post 2-3: context / what problem exists\n"
+        "- Post 4-8: main insights, one per post\n"
+        "- Post 9-11: so what? what can builders do with this\n"
+        "- Last post: natural CTA mentioning @deflatedxyz.bsky.social\n\n"
+        "Voice: casual English, build in public, solo indie builder perspective. "
+        "No markdown. Plain text only. Each post under 300 chars."
     ),
-    expected_output="Thread lengkap 8-12 tweets, siap copy-paste ke Twitter",
+    expected_output="Complete thread 8-12 posts, numbered 1/n format, plain text, ready to post",
     agent=writer,
     context=[pick_task],
 )
 
 edit_task = Task(
     description=(
-        "Review dan polish thread dari Writer:\n"
-        "1. Pastiin tweet 1 assalting banget sebagai hook\n"
-        "2. Cek tiap tweet max 280 karakter\n"
-        "3. Pastiin ada numbering yang konsisten (1/n format)\n"
-        "4. Flow antar tweet harus smooth\n"
-        "5. CTA di akhir natural, bukan maksa\n\n"
-        "Return thread final yang udah dipoles, siap post."
+        "Review and polish the thread from Writer:\n"
+        "1. Post 1 must be a strong hook — rewrite if weak\n"
+        "2. Every post must be under 300 characters\n"
+        "3. Numbering must be consistent: 1/n, 2/n, etc\n"
+        "4. Flow between posts must be smooth\n"
+        "5. Last post CTA must feel natural\n"
+        "6. No markdown formatting at all — plain text only\n\n"
+        "Return the final polished thread, ready to post."
     ),
-    expected_output="Thread final yang sudah dipoles, format rapi, siap post ke X/Twitter",
+    expected_output="Final polished thread, numbered 1/n format, plain text, under 300 chars each",
     agent=editor,
     context=[write_task],
 )
