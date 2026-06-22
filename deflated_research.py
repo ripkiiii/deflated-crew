@@ -18,11 +18,11 @@ scrape_tool = ScrapeWebsiteTool()
 
 scout = Agent(
     role="Research Scout",
-    goal="Temukan paper dan artikel terbaru tentang NLP, Indonesian AI, dan low-resource language model",
+    goal="Temukan paper dan artikel terbaru tentang NLP, Indonesian AI, dan Small Language Models (SLM)",
     backstory=(
         "Kamu adalah scout riset yang obsesif. Setiap hari kamu menyisir ArXiv, HuggingFace, "
-        "dan web untuk menemukan paper terbaru tentang NLP dan Indonesian language model. "
-        "Kamu hanya peduli dengan yang relevan untuk membangun LLM bahasa Indonesia."
+        "dan web untuk menemukan paper terbaru tentang NLP, SLM, dan Indonesian language model. "
+        "Kamu hanya peduli dengan yang relevan untuk membangun SLM bahasa Indonesia dari scratch."
     ),
     llm=llm,
     tools=[search_tool],
@@ -31,12 +31,14 @@ scout = Agent(
 
 analyst = Agent(
     role="Research Analyst",
-    goal="Analisis dan filter paper yang paling relevan untuk IDK-1 dan Nala",
+    goal="Analisis dan filter paper yang paling relevan untuk IDK-1, Nala, dan PRENA",
     backstory=(
         "Kamu adalah analis riset yang kritis. Dari daftar paper yang ditemukan Scout, "
-        "kamu menentukan mana yang benar-benar berguna untuk: (1) training Indonesian LLM dari scratch, "
-        "(2) fine-tuning model untuk domain spesifik seperti dokumen pemerintah, "
-        "(3) dataset Indonesian. Kamu buang yang tidak relevan."
+        "kamu menentukan mana yang benar-benar berguna untuk: "
+        "(1) IDK-1 — Indonesian SLM (Small Language Model) 100M param dari scratch, "
+        "(2) Nala — fine-tuned SLM untuk dokumen pemerintah Indonesia, "
+        "(3) PRENA — nano LM + dataset PR Indonesia untuk riset akademik (target paper Scopus). "
+        "SLM lebih relevan dari LLM untuk ketiga proyek ini. Kamu buang yang tidak relevan."
     ),
     llm=llm,
     tools=[scrape_tool],
@@ -60,10 +62,10 @@ summarizer = Agent(
 scout_task = Task(
     description=(
         "Cari paper dan artikel terbaru (2025-2026) tentang:\n"
-        "1. Indonesian NLP / Indonesian language model\n"
-        "2. Low-resource language model training\n"
-        "3. QLoRA / efficient fine-tuning untuk small LLM\n"
-        "4. Indonesian dataset (CommonCrawl, Wikipedia, government docs)\n\n"
+        "1. Indonesian NLP / Indonesian SLM (Small Language Model)\n"
+        "2. Low-resource SLM training / efficient pre-training\n"
+        "3. QLoRA / LoRA / PEFT untuk SLM fine-tuning\n"
+        "4. Indonesian dataset (CommonCrawl, Wikipedia, government docs, PR/media)\n\n"
         "Gunakan search tool. Cari minimal 3 query berbeda. "
         "Return: list judul + link + snippet singkat."
     ),
@@ -74,8 +76,9 @@ scout_task = Task(
 analyst_task = Task(
     description=(
         "Dari list yang ditemukan Scout, pilih TOP 3-5 yang paling relevan untuk:\n"
-        "- IDK-1: Indonesian LLM 100M parameter dari scratch\n"
-        "- Nala: fine-tuned model untuk dokumen pemerintah Indonesia\n\n"
+        "- IDK-1: Indonesian SLM 100M parameter dari scratch (decoder-only, LLaMA-style)\n"
+        "- Nala: fine-tuned SLM untuk dokumen pemerintah Indonesia\n"
+        "- PRENA: nano LM + dataset PR Indonesia, untuk riset akademik\n\n"
         "Untuk setiap paper yang dipilih, buka linknya dan baca isinya. "
         "Jelaskan kenapa paper ini relevan dan apa yang bisa dipelajari."
     ),
