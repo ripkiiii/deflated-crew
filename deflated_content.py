@@ -4,7 +4,7 @@ from crewai import Agent, Task, Crew, LLM
 from crewai_tools import FileReadTool
 
 llm = LLM(
-    model="groq/llama3-8b-8192",
+    model="groq/llama-3.1-8b-instant",
     api_key=os.environ.get("GROQ_API_KEY", "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"),
     max_tokens=1024,
 )
