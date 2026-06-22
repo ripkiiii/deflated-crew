@@ -22,22 +22,15 @@ def parse_thread(filename):
 
     import re
     tweets = []
-    # split by blank lines to get blocks
     blocks = [b.strip() for b in re.split(r'\n\s*\n', content.strip()) if b.strip()]
+    # Matches: 1/9, [1/9], **1/9**, (1/9) — with optional newline after
+    NUMBER_RE = re.compile(r'^\[?\*{0,2}\d+/\d+\*{0,2}\]?\s*', re.MULTILINE)
     for block in blocks:
-        # Format A: "1/9\ntweet text..."
-        # Format B: "1/9 tweet text..."
-        m = re.match(r'^\d+/\d+\s*\n([\s\S]+)$', block)
+        m = NUMBER_RE.match(block)
         if m:
-            tweet_text = m.group(1).strip()
-        else:
-            m2 = re.match(r'^\d+/\d+\s+(.+)$', block, re.DOTALL)
-            if m2:
-                tweet_text = m2.group(1).strip()
-            else:
-                continue
-        if tweet_text:
-            tweets.append(clean_tweet(tweet_text))
+            tweet_text = block[m.end():].strip()
+            if tweet_text:
+                tweets.append(clean_tweet(tweet_text))
     return tweets
 
 def post_thread(tweets):

@@ -21,13 +21,13 @@ jobs:
 
       - name: Research
         env:
-          ZAI_API_KEY: ${{ secrets.ZAI_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           SERPER_API_KEY: ${{ secrets.SERPER_API_KEY }}
         run: python deflated_research.py
 
       - name: Generate thread
         env:
-          ZAI_API_KEY: ${{ secrets.ZAI_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: python deflated_content.py
 
       - name: Post to Bluesky
@@ -38,7 +38,7 @@ jobs:
 
       - name: Write blog post
         env:
-          ZAI_API_KEY: ${{ secrets.ZAI_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: python deflated_blog.py
 
       - name: Upload blog artifact
