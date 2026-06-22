@@ -7,7 +7,7 @@ os.environ["SERPER_API_KEY"] = os.environ.get("SERPER_API_KEY", "1c7234686d677b5
 
 llm = LLM(
     model="gemini/gemini-2.5-flash",
-    api_key=os.environ.get("GEMINI_API_KEY", "AQ.Ab8RN6I-blFgqt8L2pB6QEoWRx_gEf25BbJF_cZ9q_E_D_Zh5w"),
+    api_key=os.environ.get("GEMINI_API_KEY", "AQ.Ab8RN6J1a0m4-i8wAII5X_yol1O3m8epsOATGa4w_gR3Jn0Rgw"),
     max_tokens=2048,
     max_rpm=4,
 )
