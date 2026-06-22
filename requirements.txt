@@ -1,4 +1,4 @@
-crewai[litellm]
+crewai[google-genai]
 crewai-tools
 atproto
 python-dateutil
