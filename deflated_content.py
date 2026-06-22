@@ -4,9 +4,9 @@ from crewai import Agent, Task, Crew, LLM
 from crewai_tools import FileReadTool
 
 llm = LLM(
-    model="groq/llama-3.1-8b-instant",
-    api_key=os.environ.get("GROQ_API_KEY", "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"),
-    max_tokens=1024,
+    model="gemini/gemini-2.5-flash",
+    api_key=os.environ.get("GEMINI_API_KEY", "AQ.Ab8RN6I-blFgqt8L2pB6QEoWRx_gEf25BbJF_cZ9q_E_D_Zh5w"),
+    max_tokens=2048,
 )
 
 digest_file = f"digest_{date.today().strftime('%Y-%m-%d')}.md"
