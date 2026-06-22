@@ -6,9 +6,8 @@ from crewai_tools import SerperDevTool, ScrapeWebsiteTool
 os.environ["SERPER_API_KEY"] = os.environ.get("SERPER_API_KEY", "1c7234686d677b501f58d6c7a555da8d5b471004")
 
 llm = LLM(
-    model="zai/glm-4.7-flash",
-    api_key=os.environ.get("ZAI_API_KEY", "fb4af394b79e400fa6277241bc3b7464.Q3ApMGJxs9flsPY5"),
-    max_rpm=6,
+    model="groq/llama-3.3-70b-versatile",
+    api_key=os.environ.get("GROQ_API_KEY", "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"),
 )
 search_tool = SerperDevTool()
 scrape_tool = ScrapeWebsiteTool()
