@@ -1,0 +1,29 @@
+name: Delete Posts by Date
+
+on:
+  workflow_dispatch:
+    inputs:
+      date:
+        description: "YYYY-MM-DD to delete posts from (leave empty = today)"
+        required: false
+        type: string
+
+jobs:
+  delete:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Delete posts
+        env:
+          BLUESKY_HANDLE: ${{ secrets.BLUESKY_HANDLE }}
+          BLUESKY_APP_PASSWORD: ${{ secrets.BLUESKY_APP_PASSWORD }}
+        run: python delete_posts.py ${{ inputs.date && format('--date {0}', inputs.date) || '' }}
