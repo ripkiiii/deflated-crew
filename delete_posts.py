@@ -12,9 +12,16 @@ HANDLE = os.environ.get("BLUESKY_HANDLE", "deflatedxyz.bsky.social")
 APP_PASSWORD = os.environ["BLUESKY_APP_PASSWORD"]
 
 ap = argparse.ArgumentParser()
-ap.add_argument("--date", default=None, help="YYYY-MM-DD to delete posts from (default: today)")
+ap.add_argument(
+    "--date",
+    default=None,
+    help="YYYY-MM-DD, or comma-separated list of dates, to delete posts from (default: today)",
+)
 args = ap.parse_args()
-target_date = dateparser.parse(args.date).date() if args.date else date.today()
+if args.date:
+    target_dates = {dateparser.parse(d.strip()).date() for d in args.date.split(",")}
+else:
+    target_dates = {date.today()}
 
 client = Client()
 client.login(HANDLE, APP_PASSWORD)
@@ -22,7 +29,7 @@ client.login(HANDLE, APP_PASSWORD)
 # get_author_feed returns individual thread replies as separate items too,
 # so a handful of threads can easily exceed one page — paginate through
 # everything instead of trusting a single limit=100 call.
-deleted = 0
+deleted_by_date = {d: 0 for d in target_dates}
 cursor = None
 
 while True:
@@ -32,17 +39,20 @@ while True:
 
     for item in feed.feed:
         post = item.post
-        created_at = dateparser.parse(post.record.created_at)
-        if created_at.date() == target_date:
+        created_at = dateparser.parse(post.record.created_at).date()
+        if created_at in target_dates:
             client.delete_post(post.uri)
-            print(f"✓ Deleted: {post.uri}")
-            deleted += 1
+            print(f"✓ Deleted [{created_at}]: {post.uri}")
+            deleted_by_date[created_at] += 1
 
     cursor = feed.cursor
     if not cursor:
         break
 
-if deleted == 0:
-    print(f"Ga ada post di {target_date}.")
+total = sum(deleted_by_date.values())
+if total == 0:
+    print(f"Ga ada post di {sorted(target_dates)}.")
 else:
-    print(f"\n🗑️ {deleted} post di {target_date} dihapus.")
+    print(f"\n🗑️ {total} post dihapus total:")
+    for d, n in sorted(deleted_by_date.items()):
+        print(f"  {d}: {n} post")
