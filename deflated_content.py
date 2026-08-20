@@ -47,7 +47,7 @@ def pick_post(slug=None):
         raise SystemExit(f"no post with slug '{slug}' found in {POSTS_FILE}")
 
     posted = load_posted_slugs()
-    for p in posts:  # posts.json is newest-first, matches getAllPosts() sort order
+    for p in reversed(posts):  # posts.json is newest-first; go oldest-first so we work through the backlog in order
         if p["slug"] not in posted:
             return p
     raise SystemExit("every post already has a thread — pass --slug to redo one on purpose")
