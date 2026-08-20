@@ -1,0 +1,39 @@
+name: Post Thread to Bluesky
+
+on:
+  workflow_dispatch:
+    inputs:
+      slug:
+        description: "Blog post slug whose draft (drafts/thread_<slug>.md) should be posted — review it first!"
+        required: true
+        type: string
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Post to Bluesky
+        env:
+          BLUESKY_HANDLE: ${{ secrets.BLUESKY_HANDLE }}
+          BLUESKY_APP_PASSWORD: ${{ secrets.BLUESKY_APP_PASSWORD }}
+        run: python deflated_post.py --slug "${{ inputs.slug }}"
+
+      - name: Commit posted-status update
+        run: |
+          git config user.name "deflated-crew bot"
+          git config user.email "actions@github.com"
+          git add data/posted_slugs.json
+          git diff --staged --quiet || git commit -m "chore: mark ${{ inputs.slug }} as posted"
+          git push

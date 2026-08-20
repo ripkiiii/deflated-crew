@@ -1,0 +1,38 @@
+name: Generate Thread
+
+on:
+  workflow_dispatch:
+    inputs:
+      slug:
+        description: "Blog post slug to use (leave empty = oldest not-yet-threaded post)"
+        required: false
+        type: string
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Generate thread draft
+        env:
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+        run: python deflated_content.py ${{ inputs.slug && format('--slug {0}', inputs.slug) || '' }}
+
+      - name: Commit draft
+        run: |
+          git config user.name "deflated-crew bot"
+          git config user.email "actions@github.com"
+          git add drafts/
+          git diff --staged --quiet || git commit -m "draft: generate thread"
+          git push
