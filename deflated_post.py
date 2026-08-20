@@ -1,12 +1,29 @@
+import argparse
+import json
 import os
+from pathlib import Path
+
 from atproto import Client, models
-from datetime import date
 
 if "BLUESKY_APP_PASSWORD" not in os.environ:
     raise SystemExit("BLUESKY_APP_PASSWORD not set in environment")
 
 HANDLE = os.environ.get("BLUESKY_HANDLE", "deflatedxyz.bsky.social")
 APP_PASSWORD = os.environ["BLUESKY_APP_PASSWORD"]
+
+POSTED_FILE = Path(__file__).parent / "data" / "posted_slugs.json"
+
+
+def mark_posted(slug):
+    posted = []
+    if POSTED_FILE.exists():
+        with open(POSTED_FILE) as f:
+            posted = json.load(f)
+    if slug not in posted:
+        posted.append(slug)
+    POSTED_FILE.parent.mkdir(exist_ok=True)
+    with open(POSTED_FILE, "w") as f:
+        json.dump(posted, f, indent=2)
 
 def clean_tweet(text):
     import re
@@ -26,8 +43,8 @@ def parse_thread(filename):
     import re
     tweets = []
     blocks = [b.strip() for b in re.split(r'\n\s*\n', content.strip()) if b.strip()]
-    # Matches: 1/9, [1/9], **1/9**, (1/9) — with optional newline after
-    NUMBER_RE = re.compile(r'^\[?\*{0,2}\d+/\d+\*{0,2}\]?\s*', re.MULTILINE)
+    # Matches: 1/9, [1/9], **1/9**, (1/9), 1/n — with optional newline after
+    NUMBER_RE = re.compile(r'^\[?\*{0,2}\d+/(?:\d+|n)\*{0,2}\]?\s*', re.MULTILINE)
     for block in blocks:
         m = NUMBER_RE.match(block)
         if m:
@@ -60,7 +77,13 @@ def post_thread(tweets):
     print(f"\n🚀 Thread live: https://bsky.app/profile/{HANDLE}")
 
 if __name__ == "__main__":
-    filename = f"thread_{date.today().strftime('%Y-%m-%d')}.md"
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--slug", required=True, help="post the draft at drafts/thread_<slug>.md")
+    args = ap.parse_args()
+
+    filename = f"drafts/thread_{args.slug}.md"
     tweets = parse_thread(filename)
     print(f"→ {len(tweets)} tweets ditemukan dari {filename}")
     post_thread(tweets)
+    mark_posted(args.slug)
+    print(f"✓ {args.slug} ditandai udah di-post di {POSTED_FILE}")

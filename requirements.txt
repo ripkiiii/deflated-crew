@@ -1,4 +1,3 @@
-crewai[google-genai]
-crewai-tools
+crewai[litellm]
 atproto
 python-dateutil
