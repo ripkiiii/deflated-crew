@@ -19,18 +19,28 @@ target_date = dateparser.parse(args.date).date() if args.date else date.today()
 client = Client()
 client.login(HANDLE, APP_PASSWORD)
 
-feed = client.get_author_feed(actor=HANDLE, limit=100)
-posts = feed.feed
-
+# get_author_feed returns individual thread replies as separate items too,
+# so a handful of threads can easily exceed one page — paginate through
+# everything instead of trusting a single limit=100 call.
 deleted = 0
+cursor = None
 
-for item in posts:
-    post = item.post
-    created_at = dateparser.parse(post.record.created_at)
-    if created_at.date() == target_date:
-        client.delete_post(post.uri)
-        print(f"✓ Deleted: {post.uri}")
-        deleted += 1
+while True:
+    feed = client.get_author_feed(actor=HANDLE, limit=100, cursor=cursor)
+    if not feed.feed:
+        break
+
+    for item in feed.feed:
+        post = item.post
+        created_at = dateparser.parse(post.record.created_at)
+        if created_at.date() == target_date:
+            client.delete_post(post.uri)
+            print(f"✓ Deleted: {post.uri}")
+            deleted += 1
+
+    cursor = feed.cursor
+    if not cursor:
+        break
 
 if deleted == 0:
     print(f"Ga ada post di {target_date}.")
