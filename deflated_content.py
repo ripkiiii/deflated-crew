@@ -3,9 +3,12 @@ from datetime import date
 from crewai import Agent, Task, Crew, LLM
 from crewai_tools import FileReadTool
 
+if "GEMINI_API_KEY" not in os.environ:
+    raise SystemExit("GEMINI_API_KEY not set in environment")
+
 llm = LLM(
     model="gemini/gemini-2.5-flash-lite",
-    api_key=os.environ.get("GEMINI_API_KEY", "AQ.Ab8RN6J1a0m4-i8wAII5X_yol1O3m8epsOATGa4w_gR3Jn0Rgw"),
+    api_key=os.environ["GEMINI_API_KEY"],
     max_tokens=2048,
     max_rpm=4,
 )

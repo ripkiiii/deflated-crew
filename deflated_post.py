@@ -2,8 +2,11 @@ import os
 from atproto import Client, models
 from datetime import date
 
+if "BLUESKY_APP_PASSWORD" not in os.environ:
+    raise SystemExit("BLUESKY_APP_PASSWORD not set in environment")
+
 HANDLE = os.environ.get("BLUESKY_HANDLE", "deflatedxyz.bsky.social")
-APP_PASSWORD = os.environ.get("BLUESKY_APP_PASSWORD", "jgn3-kzui-ia7t-p4mg")
+APP_PASSWORD = os.environ["BLUESKY_APP_PASSWORD"]
 
 def clean_tweet(text):
     import re
